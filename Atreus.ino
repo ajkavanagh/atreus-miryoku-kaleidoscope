@@ -35,11 +35,11 @@
 #include "Kaleidoscope-DynamicMacros.h"
 #include "Kaleidoscope-LayerNames.h"
 
-#define MO(n) ShiftToLayer(n)
-#define TG(n) LockLayer(n)
+#define SL(n) ShiftToLayer(n)
+#define LL(n) LockLayer(n)
 
 enum {
-  MACRO_QWERTY,
+  MACRO_PRIMARY,
   MACRO_VERSION_INFO
 };
 
@@ -67,19 +67,19 @@ enum {
   */
 
 #define PRIMARY_KEYMAP_QWERTY
-// #define PRIMARY_KEYMAP_DVORAK
 // #define PRIMARY_KEYMAP_COLEMAK
-// #define PRIMARY_KEYMAP_CUSTOM
 
 enum {
-  QWERTY,
+  PRIMARY,
   FUN,
   UPPER
 };
 
 // clang-format off
 KEYMAPS(
-  [QWERTY] = KEYMAP_STACKED
+
+#if defined (PRIMARY_KEYMAP_QWERTY)
+  [PRIMARY] = KEYMAP_STACKED
   (
        Key_Q   ,Key_W   ,Key_E       ,Key_R         ,Key_T
       ,Key_A   ,Key_S   ,Key_D       ,Key_F         ,Key_G
@@ -89,17 +89,36 @@ KEYMAPS(
                      ,Key_Y     ,Key_U      ,Key_I     ,Key_O      ,Key_P
                      ,Key_H     ,Key_J      ,Key_K     ,Key_L      ,Key_Semicolon
        ,Key_Backslash,Key_N     ,Key_M      ,Key_Comma ,Key_Period ,Key_Slash
-       ,Key_LeftAlt  ,Key_Space ,MO(FUN)    ,Key_Minus ,Key_Quote  ,Key_Enter
+       ,Key_LeftAlt  ,Key_Space ,SL(FUN)    ,Key_Minus ,Key_Quote  ,Key_Enter
   ),
 
-  // TODO - make this the default
+#elif defined (PRIMARY_KEYMAP_COLEMAK)
 
+  [PRIMARY] = KEYMAP_STACKED
+  (
+       Key_Q   ,Key_W   ,Key_F       ,Key_P         ,Key_B
+      ,Key_A   ,Key_R   ,Key_S       ,Key_T         ,Key_G
+      ,Key_Z   ,Key_X   ,Key_C       ,Key_D         ,Key_V, Key_Backtick
+      ,Key_Esc ,Key_Tab ,Key_LeftGui ,Key_LeftShift ,Key_Backspace ,Key_LeftControl
+
+                     ,Key_J     ,Key_L      ,Key_U     ,Key_Y      ,Key_Semicolon
+                     ,Key_M     ,Key_N      ,Key_E     ,Key_I      ,Key_O
+       ,Key_Backslash,Key_K     ,Key_H      ,Key_Comma ,Key_Period ,Key_Slash
+       ,Key_LeftAlt  ,Key_Space ,SL(FUN)    ,Key_Minus ,Key_Quote  ,Key_Enter
+  ),
+
+
+#else
+
+#error "No default keymap defined. You should make sure that you have a line like '#define PRIMARY_KEYMAP_QWERTY' in your sketch"
+
+#endif
   [FUN] = KEYMAP_STACKED
   (
        Key_Exclamation ,Key_At           ,Key_UpArrow   ,Key_Dollar           ,Key_Percent
       ,Key_LeftParen   ,Key_LeftArrow    ,Key_DownArrow ,Key_RightArrow       ,Key_RightParen
       ,Key_LeftBracket ,Key_RightBracket ,Key_Hash      ,Key_LeftCurlyBracket ,Key_RightCurlyBracket ,Key_Caret
-      ,TG(UPPER)       ,Key_Insert       ,Key_LeftGui   ,Key_LeftShift        ,Key_Delete         ,Key_LeftControl
+      ,LL(UPPER)       ,Key_Insert       ,Key_LeftGui   ,Key_LeftShift        ,Key_Delete         ,Key_LeftControl
 
                    ,Key_PageUp   ,Key_7 ,Key_8      ,Key_9 ,Key_Backspace
                    ,Key_PageDown ,Key_4 ,Key_5      ,Key_6 ,___
@@ -112,12 +131,12 @@ KEYMAPS(
        Key_Insert            ,Key_Home                 ,Key_UpArrow   ,Key_End        ,Key_PageUp
       ,Key_Delete            ,Key_LeftArrow            ,Key_DownArrow ,Key_RightArrow ,Key_PageDown
       ,M(MACRO_VERSION_INFO) ,Consumer_VolumeIncrement ,XXX           ,XXX            ,___ ,___
-      ,MoveToLayer(QWERTY)   ,Consumer_VolumeDecrement ,___           ,___            ,___ ,___
+      ,MoveToLayer(PRIMARY)   ,Consumer_VolumeDecrement ,___           ,___            ,___ ,___
 
                 ,Key_UpArrow   ,Key_F7              ,Key_F8          ,Key_F9         ,Key_F10
                 ,Key_DownArrow ,Key_F4              ,Key_F5          ,Key_F6         ,Key_F11
       ,___      ,XXX           ,Key_F1              ,Key_F2          ,Key_F3         ,Key_F12
-      ,___      ,___           ,MoveToLayer(QWERTY) ,Key_PrintScreen ,Key_ScrollLock ,Consumer_PlaySlashPause
+      ,___      ,___           ,MoveToLayer(PRIMARY) ,Key_PrintScreen ,Key_ScrollLock ,Consumer_PlaySlashPause
    )
 )
 // clang-format on
@@ -196,12 +215,12 @@ KALEIDOSCOPE_INIT_PLUGINS(
 const macro_t *macroAction(uint8_t macro_id, KeyEvent &event) {
   if (keyToggledOn(event.state)) {
     switch (macro_id) {
-    case MACRO_QWERTY:
+    case MACRO_PRIMARY:
       // This macro is currently unused, but is kept around for compatibility
-      // reasons. We used to use it in place of `MoveToLayer(QWERTY)`, but no
+      // reasons. We used to use it in place of `MoveToLayer(PRIMARY)`, but no
       // longer do. We keep it so that if someone still has the old layout with
       // the macro in EEPROM, it will keep working after a firmware update.
-      Layer.move(QWERTY);
+      Layer.move(PRIMARY);
       break;
     case MACRO_VERSION_INFO:
       Macros.type(PSTR("Keyboardio Atreus - Kaleidoscope "));
