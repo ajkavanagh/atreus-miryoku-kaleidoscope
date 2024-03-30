@@ -22,18 +22,19 @@
 #endif
 
 #include "Kaleidoscope.h"
-#include "Kaleidoscope-EEPROM-Settings.h"
-#include "Kaleidoscope-EEPROM-Keymap.h"
+//#include "Kaleidoscope-EEPROM-Settings.h"
+//#include "Kaleidoscope-EEPROM-Keymap.h"
 #include "Kaleidoscope-Escape-OneShot.h"
-#include "Kaleidoscope-FirmwareVersion.h"
-#include "Kaleidoscope-FocusSerial.h"
+//#include "Kaleidoscope-FirmwareVersion.h"
+//#include "Kaleidoscope-FocusSerial.h"
 #include "Kaleidoscope-Macros.h"
 #include "Kaleidoscope-MouseKeys.h"
+#include "Kaleidoscope-TapDance.h"
 #include "Kaleidoscope-OneShot.h"
 #include "Kaleidoscope-Qukeys.h"
-#include "Kaleidoscope-SpaceCadet.h"
-#include "Kaleidoscope-DynamicMacros.h"
-#include "Kaleidoscope-LayerNames.h"
+//#include "Kaleidoscope-SpaceCadet.h"
+//#include "Kaleidoscope-DynamicMacros.h"
+//#include "Kaleidoscope-LayerNames.h"
 
 #define SL(n) ShiftToLayer(n)
 #define LL(n) LockLayer(n)
@@ -68,81 +69,165 @@ enum {
   *
   */
 
-#define PRIMARY_KEYMAP_QWERTY
-// #define PRIMARY_KEYMAP_COLEMAK
-
 enum {
-  PRIMARY,
-  FUN,
-  UPPER
+  COLEMAK_LAYER,
+  QWERTY_LAYER,
+  SYM_LAYER,
+  NUM_LAYER,
+  FUN_LAYER,
+  NAV_LAYER,
+  MOUSE_LAYER,
+  MEDIA_LAYER
+};
+
+#define REDO LCTRL(LSHIFT(Key_Z))
+
+#define KEY_ESC_MEDIA LT(MEDIA_LAYER, Esc)
+#define KEY_SPC_NAV   LT(NAV_LAYER, Space)
+#define KEY_TAB_MOUSE LT(MOUSE_LAYER, Tab)
+#define KEY_ENT_SYM   LT(SYM_LAYER, Enter)
+#define KEY_BSPC_NUM  LT(NUM_LAYER, Backspace)
+#define KEY_DEL_FUN   LT(FUN_LAYER, Delete)
+
+
+// tap dance key enum
+enum {
+  TD_CUR,
+  TD_OPP,
+  TD_BOOT,
+  TD_TAP,
+  TD_EXTRA,
+  TD_BASE
 };
 
 // clang-format off
 KEYMAPS(
 
-#if defined (PRIMARY_KEYMAP_QWERTY)
-  [PRIMARY] = KEYMAP_STACKED
-  (
-       Key_Q         ,Key_W     ,Key_E       ,Key_R         ,Key_T
-      ,Key_A         ,Key_S     ,Key_D       ,Key_F         ,Key_G
-      ,Key_Z         ,Key_X     ,Key_C       ,Key_V         ,Key_B         ,Key_Backtick
-      ,Key_Esc       ,Key_Tab   ,Key_LeftGui ,Key_LeftShift ,Key_Backspace ,Key_LeftControl
+// Note that XXX = No key, and ___ = Transparent key, which means the one in the stack below is available.
 
-                     ,Key_Y     ,Key_U       ,Key_I         ,Key_O         ,Key_P
-                     ,Key_H     ,Key_J       ,Key_K         ,Key_L         ,Key_Semicolon
-      ,Key_Backslash ,Key_N     ,Key_M       ,Key_Comma     ,Key_Period    ,Key_Slash
-      ,Key_LeftAlt   ,Key_Space ,SL(FUN)     ,Key_Minus     ,Key_Quote     ,Key_Enter
+  [COLEMAK_LAYER] = KEYMAP_STACKED
+  (
+       Key_Q         ,Key_W           ,Key_F        ,Key_P         ,Key_B
+      ,GUI_T(Key_A)  ,ALT_T(Key_R)    ,CTL_T(Key_S) ,SFT_T(Key_T)  ,Key_G
+      ,Key_Z         ,MT(RALT, Key_X) ,Key_C        ,Key_D         ,Key_V                ,XXX
+      ,XXX           ,XXX             ,XXX          ,KEY_ESC_MEDIA ,KEY_SPC_NAV          ,KEY_TAB_MOUSE
+
+                     ,Key_J           ,Key_L        ,Key_U         ,Key_Y                ,Key_Semicolon
+                     ,Key_M           ,SFT_T(Key_N) ,CTL_T(Key_E)  ,ALT_T(Key_I)         ,GUI_T(Key_O)
+      ,XXX           ,Key_K           ,Key_H        ,Key_Comma     ,MT(RALT, Key_Period) ,Key_Slash
+      ,KEY_ENT_SYM   ,KEY_BSPC_NUM    ,KEY_DEL_FUN  ,XXX           ,XXX                  ,XXX
   ),
 
-#elif defined (PRIMARY_KEYMAP_COLEMAK)
-
-  [PRIMARY] = KEYMAP_STACKED
+  [QWERTY_LAYER] = KEYMAP_STACKED
   (
-       Key_Q         ,Key_W     ,Key_F       ,Key_P         ,Key_B
-      ,Key_A         ,Key_R     ,Key_S       ,Key_T         ,Key_G
-      ,Key_Z         ,Key_X     ,Key_C       ,Key_D         ,Key_V         ,Key_Backtick
-      ,Key_Esc       ,Key_Tab   ,Key_LeftGui ,Key_LeftShift ,Key_Backspace ,Key_LeftControl
+       Key_Q         ,Key_W           ,Key_E        ,Key_R         ,Key_T
+      ,GUI_T(Key_A)  ,ALT_T(Key_S)    ,CTL_T(Key_D) ,SFT_T(Key_F)  ,Key_G
+      ,Key_Z         ,MT(RALT, Key_X) ,Key_C        ,Key_V         ,Key_B                ,XXX
+      ,XXX           ,XXX             ,XXX          ,KEY_ESC_MEDIA ,KEY_SPC_NAV          ,KEY_TAB_MOUSE
 
-                     ,Key_J     ,Key_L       ,Key_U         ,Key_Y         ,Key_Semicolon
-                     ,Key_M     ,Key_N       ,Key_E         ,Key_I         ,Key_O
-      ,Key_Backslash ,Key_K     ,Key_H       ,Key_Comma     ,Key_Period    ,Key_Slash
-      ,Key_LeftAlt   ,Key_Space ,SL(FUN)     ,Key_Minus     ,Key_Quote     ,Key_Enter
+                     ,Key_Y           ,Key_U        ,Key_I         ,Key_O                ,Key_P
+                     ,Key_H           ,SFT_T(Key_J) ,CTL_T(Key_K)  ,ALT_T(Key_L)         ,GUI_T(Key_Semicolon)
+      ,XXX           ,Key_N           ,Key_M        ,Key_Comma     ,MT(RALT, Key_Period) ,Key_Slash
+      ,KEY_ENT_SYM   ,KEY_BSPC_NUM    ,KEY_DEL_FUN  ,XXX           ,XXX                  ,XXX
   ),
 
 
-#else
-
-#error "No default keymap defined. You should make sure that you have a line like '#define PRIMARY_KEYMAP_QWERTY' in your sketch"
-
-#endif
-
-  [FUN] = KEYMAP_STACKED
+  // Symbol layer accessed from QuKey held on Key_Enter
+  [SYM_LAYER] = KEYMAP_STACKED
   (
-       Key_Exclamation      ,Key_At                   ,Key_UpArrow    ,Key_Dollar           ,Key_Percent
-      ,Key_LeftParen        ,Key_LeftArrow            ,Key_DownArrow  ,Key_RightArrow       ,Key_RightParen
-      ,Key_LeftBracket      ,Key_RightBracket         ,Key_Hash       ,Key_LeftCurlyBracket ,Key_RightCurlyBracket ,Key_Caret
-      ,LL(UPPER)            ,Key_Insert               ,Key_LeftGui    ,Key_LeftShift        ,Key_Delete            ,Key_LeftControl
+       Key_LeftCurlyBracket   ,Key_And                  ,Key_Star       ,Key_LeftParen        ,Key_RightCurlyBracket
+      ,LSHIFT(Key_Semicolon)  ,Key_Dollar               ,Key_Percent    ,Key_Caret            ,Key_Plus
+      ,LSHIFT(Key_NonUsPound) ,Key_Exclamation          ,Key_At         ,Key_Hash             ,Key_Pipe              ,XXX
+      ,XXX                    ,XXX                      ,XXX            ,Key_LeftParen        ,Key_RightParen        ,LSHIFT(Key_Minus)
 
-                            ,Key_PageUp               ,Key_7          ,Key_8                ,Key_9                 ,Key_Backspace
-                            ,Key_PageDown             ,Key_4          ,Key_5                ,Key_6                 ,___
-      ,Key_And              ,Key_Star                 ,Key_1          ,Key_2                ,Key_3                 ,Key_Plus
-      ,Key_LeftAlt          ,Key_Space                ,___            ,Key_Period           ,Key_0                 ,Key_Equals
+                              ,XXX                      ,TD(TD_BASE)    ,TD(TD_EXTRA)         ,TD(TD_TAP)            ,TD(TD_BOOT)
+                              ,XXX                      ,Key_RightShift ,Key_RightControl     ,Key_RightAlt          ,Key_RightGui
+      ,XXX                    ,XXX                      ,TD(TD_CUR)     ,TD(TD_OPP)           ,XXX                   ,XXX
+      ,___                    ,XXX                      ,XXX            ,XXX                  ,XXX                   ,XXX
    ),
 
-  [UPPER] = KEYMAP_STACKED
+  // Num layer accessed from QuKey held on Key_Backspace
+  [NUM_LAYER] = KEYMAP_STACKED
   (
-       Key_Insert            ,Key_Home                 ,Key_UpArrow   ,Key_End              ,Key_PageUp
-      ,Key_Delete            ,Key_LeftArrow            ,Key_DownArrow ,Key_RightArrow       ,Key_PageDown
-      ,M(MACRO_VERSION_INFO) ,Consumer_VolumeIncrement ,XXX           ,XXX                  ,___                   ,___
-      ,MTL(PRIMARY)          ,Consumer_VolumeDecrement ,___           ,___                  ,___                   ,___
+       Key_LeftBracket      ,Key_7                    ,Key_8          ,Key_9                ,Key_RightBracket
+      ,Key_Semicolon        ,Key_4                    ,Key_5          ,Key_6                ,Key_Equals
+      ,Key_Backtick         ,Key_1                    ,Key_2          ,Key_3                ,Key_Backslash         ,XXX
+      ,XXX                  ,XXX                      ,XXX            ,Key_Period           ,Key_0                 ,Key_Minus
 
-                             ,Key_UpArrow              ,Key_F7        ,Key_F8               ,Key_F9                ,Key_F10
-                             ,Key_DownArrow            ,Key_F4        ,Key_F5               ,Key_F6                ,Key_F11
-      ,___                   ,XXX                      ,Key_F1        ,Key_F2               ,Key_F3                ,Key_F12
-      ,___                   ,___                      ,MTL(PRIMARY)  ,Key_PrintScreen      ,Key_ScrollLock        ,Consumer_PlaySlashPause
+                            ,XXX                      ,TD(TD_BASE)    ,TD(TD_EXTRA)         ,TD(TD_TAP)            ,TD(TD_BOOT)
+                            ,XXX                      ,Key_RightShift ,Key_RightControl     ,Key_RightAlt          ,Key_RightGui
+      ,XXX                  ,XXX                      ,TD(TD_CUR)     ,TD(TD_OPP)           ,XXX                   ,XXX
+      ,XXX                  ,___                      ,XXX            ,XXX                  ,XXX                   ,XXX
+   ),
+
+
+  // Function layer accessed from QuKey held on Key_Delete
+  [FUN_LAYER] = KEYMAP_STACKED
+  (
+       Key_F12              ,Key_F7                   ,Key_F8         ,Key_F9               ,Key_PrintScreen
+      ,Key_F11              ,Key_F4                   ,Key_F5         ,Key_F6               ,Key_ScrollLock
+      ,Key_F10              ,Key_F1                   ,Key_F2         ,Key_F3               ,Key_Pause             ,XXX
+      ,XXX                  ,XXX                      ,XXX            ,Key_Menu             ,Key_Space             ,Key_Tab
+
+                            ,XXX                      ,TD(TD_BASE)    ,TD(TD_EXTRA)         ,TD(TD_TAP)            ,TD(TD_BOOT)
+                            ,XXX                      ,Key_RightShift ,Key_RightControl     ,Key_RightAlt          ,Key_RightGui
+      ,XXX                  ,XXX                      ,TD(TD_CUR)     ,TD(TD_OPP)           ,XXX                   ,XXX
+      ,XXX                  ,XXX                      ,___            ,XXX                  ,XXX                   ,XXX
+   ),
+
+  // Media layer accessed from QuKey held on Key_Escape
+  [MEDIA_LAYER] = KEYMAP_STACKED
+  (
+       TD(TD_BOOT)          ,TD(TD_TAP)               ,TD(TD_EXTRA)    ,TD(TD_BASE)          ,XXX
+      ,Key_LeftGui          ,Key_LeftAlt              ,Key_LeftControl ,Key_LeftShift        ,XXX
+      ,XXX                  ,XXX                      ,TD(TD_OPP)      ,TD(TD_CUR)           ,XXX                   ,XXX
+      ,XXX                  ,XXX                      ,XXX             ,___                  ,XXX                   ,XXX
+
+                            ,REDO                     ,Key_Paste       ,Key_Copy             ,Key_Cut               ,Key_Undo
+                            ,Key_LeftArrow            ,Key_DownArrow   ,Key_UpArrow          ,Key_RightArrow        ,Key_CapsLock
+      ,XXX                  ,Key_Home                 ,Key_PageDown    ,Key_PageUp           ,Key_End               ,Key_Insert
+      ,Key_Enter            ,Key_Backspace            ,Key_Delete      ,XXX                  ,XXX                   ,XXX
+   ),
+
+  // Navigation layer accessed from QuKey held on Key_Space
+  [NAV_LAYER] = KEYMAP_STACKED
+  (
+       TD(TD_BOOT)          ,TD(TD_TAP)               ,TD(TD_EXTRA)    ,TD(TD_BASE)          ,XXX
+      ,Key_LeftGui          ,Key_LeftAlt              ,Key_LeftControl ,Key_LeftShift        ,XXX
+      ,XXX                  ,XXX                      ,TD(TD_OPP)      ,TD(TD_CUR)           ,XXX                   ,XXX
+      ,XXX                  ,XXX                      ,XXX             ,XXX                  ,___                   ,XXX
+
+                            ,REDO                     ,Key_Paste       ,Key_Copy             ,Key_Cut               ,Key_Undo
+                            ,Key_LeftArrow            ,Key_DownArrow   ,Key_UpArrow          ,Key_RightArrow        ,Key_CapsLock
+      ,XXX                  ,Key_Home                 ,Key_PageDown    ,Key_PageUp           ,Key_End               ,Key_Insert
+      ,Key_Enter            ,Key_Backspace            ,Key_Delete      ,XXX                  ,XXX                   ,XXX
+   ),
+
+  // Mouse layer accessed from QuKey held on Key_Tab
+  [MOUSE_LAYER] = KEYMAP_STACKED
+  (
+       TD(TD_BOOT)          ,TD(TD_TAP)               ,TD(TD_EXTRA)    ,TD(TD_BASE)          ,XXX
+      ,Key_LeftGui          ,Key_LeftAlt              ,Key_LeftControl ,Key_LeftShift        ,XXX
+      ,XXX                  ,XXX                      ,TD(TD_OPP)      ,TD(TD_CUR)           ,XXX                   ,XXX
+      ,XXX                  ,XXX                      ,XXX             ,XXX                  ,XXX                   ,___
+
+                            ,REDO                     ,Key_Paste       ,Key_Copy             ,Key_Cut               ,Key_Undo
+                            ,Key_mouseL               ,Key_mouseDn     ,Key_mouseUp          ,Key_mouseR            ,Key_mouseScrollUp
+      ,XXX                  ,Key_mouseWarpW           ,Key_mouseWarpS  ,Key_mouseWarpN       ,Key_mouseWarpE        ,Key_mouseScrollDn
+      ,Key_mouseBtnR        ,Key_mouseBtnL            ,Key_mouseBtnM   ,XXX                  ,XXX                   ,XXX
    )
+
 )
 // clang-format on
+
+/* for QuKeys, the following addresses are for the Atreus:
+
+  R0C0, R0C1, R0C2, R0C3, R0C4, XXX,  XXX,  R0C7, R0C8, R0C9, R0C10, R0C11, \
+  R1C0, R1C1, R1C2, R1C3, R1C4, XXX,  XXX,  R1C7, R1C8, R1C9, R1C10, R1C11, \
+  R2C0, R2C1, R2C2, R2C3, R2C4, R2C5, R2C6, R2C7, R2C8, R2C9, R2C10, R2C11, \
+  R3C0, R3C1, R3C2, R3C3, R3C4, R3C5, R3C6, R3C7, R3C8, R3C9, R3C10, R3C11
+
+*/
 
 KALEIDOSCOPE_INIT_PLUGINS(
   // ----------------------------------------------------------------------
@@ -150,29 +235,29 @@ KALEIDOSCOPE_INIT_PLUGINS(
 
   // The EEPROMSettings & EEPROMKeymap plugins make it possible to have an
   // editable keymap in EEPROM.
-  EEPROMSettings,
-  EEPROMKeymap,
+  //EEPROMSettings,
+  //EEPROMKeymap,
 
   // Focus allows bi-directional communication with the host, and is the
   // interface through which the keymap in EEPROM can be edited.
-  Focus,
+  //Focus,
 
   // FocusSettingsCommand adds a few Focus commands, intended to aid in
   // changing some settings of the keyboard, such as the default layer (via the
   // `settings.defaultLayer` command)
-  FocusSettingsCommand,
+  //FocusSettingsCommand,
 
   // FocusEEPROMCommand adds a set of Focus commands, which are very helpful in
   // both debugging, and in backing up one's EEPROM contents.
-  FocusEEPROMCommand,
+  //FocusEEPROMCommand,
 
   // The FirmwareVersion plugin lets Chrysalis query the version of the firmware
   // programmatically.
-  FirmwareVersion,
+  //FirmwareVersion,
 
   // The LayerNames plugin allows Chrysalis to display - and edit - custom layer
   // names, to be shown instead of the default indexes.
-  LayerNames,
+  //LayerNames,
 
   // ----------------------------------------------------------------------
   // Keystroke-handling plugins
@@ -182,11 +267,16 @@ KALEIDOSCOPE_INIT_PLUGINS(
   // performed when tapped, but the secondary action when held.
   Qukeys,
 
+  // Tap-dance keys are general purpose, multi-use keys, which trigger a different action based on the number of times they were tapped in
+  // sequence. As an example to make this clearer, one can have a key that inputs A when tapped once, inputs B when tapped twice, and
+  // lights up the keyboard in Christmas colors when tapped a third time
+  TapDance,
+
   // SpaceCadet can turn your shifts into parens on tap, while keeping them as
   // Shifts when held. SpaceCadetConfig lets Chrysalis configure some aspects of
   // the plugin.
-  SpaceCadet,
-  SpaceCadetConfig,
+  //SpaceCadet,
+  //SpaceCadetConfig,
 
   // Enables the "Sticky" behavior for modifiers, and the "Layer shift when
   // held" functionality for layer keys.
@@ -199,7 +289,7 @@ KALEIDOSCOPE_INIT_PLUGINS(
   Macros,
 
   // Enables dynamic, Chrysalis-editable macros.
-  DynamicMacros,
+  //DynamicMacros,
 
   // The MouseKeys plugin lets you add keys to your keymap which move the mouse.
   MouseKeys,
@@ -210,9 +300,6 @@ KALEIDOSCOPE_INIT_PLUGINS(
   // same time.
   // MagicCombo,
 
-  // Enables the GeminiPR Stenography protocol. Unused by default, but with the
-  // plugin enabled, it becomes configurable - and then usable - via Chrysalis.
-  // GeminiPR,
 );
 
 const macro_t *macroAction(uint8_t macro_id, KeyEvent &event) {
@@ -223,7 +310,7 @@ const macro_t *macroAction(uint8_t macro_id, KeyEvent &event) {
       // reasons. We used to use it in place of `MoveToLayer(PRIMARY)`, but no
       // longer do. We keep it so that if someone still has the old layout with
       // the macro in EEPROM, it will keep working after a firmware update.
-      Layer.move(PRIMARY);
+      Layer.move(COLEMAK_LAYER);
       break;
     case MACRO_VERSION_INFO:
       Macros.type(PSTR("Keyboardio Atreus - Kaleidoscope "));
@@ -236,22 +323,100 @@ const macro_t *macroAction(uint8_t macro_id, KeyEvent &event) {
   return MACRO_NONE;
 }
 
+// calculate the opposite layer for the OPP tapDance key when on a layer.
+// relies on holding and shifting to the layer, and then doing the tapdance.
+uint8_t oppLayer(uint8_t cur_layer) {
+  switch (cur_layer) {
+    case COLEMAK_LAYER:
+      return QWERTY_LAYER;
+    case QWERTY_LAYER:
+      return COLEMAK_LAYER;
+    case SYM_LAYER:
+      return MOUSE_LAYER;
+    case MOUSE_LAYER:
+      return SYM_LAYER;
+    case NUM_LAYER:
+      return NAV_LAYER;
+    case NAV_LAYER:
+      return NUM_LAYER;
+    case FUN_LAYER:
+      return MEDIA_LAYER;
+    case MEDIA_LAYER:
+      return FUN_LAYER;
+  }
+  return cur_layer;
+}
+
+// we use tap-dance for the double tap requirements for the CUR, OPP, BASE, EXTRA, TAP and BOOT function keys in the keymap.
+// They are represented as TD(TD_CUR), etc.
+void tapDanceDouble(uint8_t tap_dance_index, KeyAddr key_addr, uint8_t tap_count, kaleidoscope::plugin::TapDance::ActionType tap_dance_action) {
+  if (tap_count != 2) {
+    return;
+  }
+  switch (tap_dance_index) {
+    case TD_CUR:
+      // Move to the current layer; this is a one way opp, and TD_BASE, or TD_EXTRA is needed to get 'out'.
+      Layer.move(Layer.mostRecent());
+      break;
+    case TD_OPP:
+      // Move to the opposite thumb layer; this is a one way operation, and TD_BASE or TD_EXTRA is need to get 'out'
+      Layer.move(oppLayer(Layer.mostRecent()));
+      break;
+    case TD_BOOT:
+      Kaleidoscope.device().rebootBootloader();
+      break;  // not really necessary as rebootBootloader() doesn't return.
+    case TD_TAP:
+      // Tap is about disabling the dual function keys for the primary alpha; we'll ignore this for the moment.
+      break;
+    case TD_EXTRA:
+      Layer.move(QWERTY_LAYER);
+      break;
+    case TD_BASE:
+      Layer.move(COLEMAK_LAYER);
+      break;
+  }
+}
+
+void tapDanceAction(uint8_t tap_dance_index, KeyAddr key_addr, uint8_t tap_count, kaleidoscope::plugin::TapDance::ActionType tap_dance_action) {
+  switch (tap_dance_index) {
+      tapDanceDouble(tap_dance_index, key_addr, tap_count, tap_dance_action);
+  }
+}
+
+
 void setup() {
+  // set up qukeys before the kaleidoscope.setup() call.
+  // Note that these are default values.
+
+  Qukeys.setHoldTimeout(250);
+  Qukeys.setMaxIntervalForTapRepeat(200);
+  Qukeys.setOverlapThreshold(80);
+  Qukeys.setMinimumHoldTime(50);
+  Qukeys.setMinimumPriorInterval(75);
+
   Kaleidoscope.setup();
-  EEPROMKeymap.setup(9);
 
-  DynamicMacros.reserve_storage(48);
+  //EEPROMKeymap.setup(9);
 
-  LayerNames.reserve_storage(63);
+  //DynamicMacros.reserve_storage(48);
 
-  Layer.move(EEPROMSettings.default_layer());
+  //LayerNames.reserve_storage(63);
 
+  //Layer.move(EEPROMSettings.default_layer());
+
+  // Disable space cadet as we don't have shift keys on each side.
   // To avoid any surprises, SpaceCadet is turned off by default. However, it
   // can be permanently enabled via Chrysalis, so we should only disable it if
   // no configuration exists.
-  SpaceCadetConfig.disableSpaceCadetIfUnconfigured();
+  //SpaceCadetConfig.disableSpaceCadetIfUnconfigured();
+
+  // TODO[ajkavanagh]:
+  // * TapDance actions for TD_CUR, TD_OPP, TD_EXTRA, TD_TAP, TD_BASE, TD_BOOT
+
 }
 
 void loop() {
   Kaleidoscope.loop();
 }
+
+// # vim: filetype=arduino tabstop=2 softtabstop=2 shiftwidth=2 textwidth=140 expandtab autoindent :
