@@ -100,39 +100,37 @@ enum {
   TD_BASE
 };
 
+// Note that XXX = No key, and ___ = Transparent key, which means the one in the stack below is available.
 // clang-format off
 KEYMAPS(
 
-// Note that XXX = No key, and ___ = Transparent key, which means the one in the stack below is available.
 
   [COLEMAK_LAYER] = KEYMAP_STACKED
   (
        Key_Q         ,Key_W           ,Key_F        ,Key_P         ,Key_B
-      ,GUI_T(Key_A)  ,ALT_T(Key_R)    ,CTL_T(Key_S) ,SFT_T(Key_T)  ,Key_G
-      ,Key_Z         ,MT(RALT, Key_X) ,Key_C        ,Key_D         ,Key_V                ,XXX
+      ,GUI_T(A)      ,ALT_T(R)        ,CTL_T(S)     ,SFT_T(T)      ,Key_G
+      ,Key_Z         ,MT(RightAlt, X) ,Key_C        ,Key_D         ,Key_V                ,XXX
       ,XXX           ,XXX             ,XXX          ,KEY_ESC_MEDIA ,KEY_SPC_NAV          ,KEY_TAB_MOUSE
 
                      ,Key_J           ,Key_L        ,Key_U         ,Key_Y                ,Key_Semicolon
-                     ,Key_M           ,SFT_T(Key_N) ,CTL_T(Key_E)  ,ALT_T(Key_I)         ,GUI_T(Key_O)
-      ,XXX           ,Key_K           ,Key_H        ,Key_Comma     ,MT(RALT, Key_Period) ,Key_Slash
+                     ,Key_M           ,SFT_T(N)     ,CTL_T(E)      ,ALT_T(I)             ,GUI_T(O)
+      ,XXX           ,Key_K           ,Key_H        ,Key_Comma     ,MT(RightAlt, Period) ,Key_Slash
       ,KEY_ENT_SYM   ,KEY_BSPC_NUM    ,KEY_DEL_FUN  ,XXX           ,XXX                  ,XXX
   ),
 
   [QWERTY_LAYER] = KEYMAP_STACKED
   (
        Key_Q         ,Key_W           ,Key_E        ,Key_R         ,Key_T
-      ,GUI_T(Key_A)  ,ALT_T(Key_S)    ,CTL_T(Key_D) ,SFT_T(Key_F)  ,Key_G
-      ,Key_Z         ,MT(RALT, Key_X) ,Key_C        ,Key_V         ,Key_B                ,XXX
+      ,GUI_T(A)      ,ALT_T(S)        ,CTL_T(D)     ,SFT_T(F)      ,Key_G
+      ,Key_Z         ,MT(RightAlt, X) ,Key_C        ,Key_V         ,Key_B                ,XXX
       ,XXX           ,XXX             ,XXX          ,KEY_ESC_MEDIA ,KEY_SPC_NAV          ,KEY_TAB_MOUSE
 
                      ,Key_Y           ,Key_U        ,Key_I         ,Key_O                ,Key_P
-                     ,Key_H           ,SFT_T(Key_J) ,CTL_T(Key_K)  ,ALT_T(Key_L)         ,GUI_T(Key_Semicolon)
-      ,XXX           ,Key_N           ,Key_M        ,Key_Comma     ,MT(RALT, Key_Period) ,Key_Slash
+                     ,Key_H           ,SFT_T(J)     ,CTL_T(K)      ,ALT_T(L)             ,GUI_T(Semicolon)
+      ,XXX           ,Key_N           ,Key_M        ,Key_Comma     ,MT(RightAlt, Period) ,Key_Slash
       ,KEY_ENT_SYM   ,KEY_BSPC_NUM    ,KEY_DEL_FUN  ,XXX           ,XXX                  ,XXX
   ),
 
-
-  // Symbol layer accessed from QuKey held on Key_Enter
   [SYM_LAYER] = KEYMAP_STACKED
   (
        Key_LeftCurlyBracket   ,Key_And                  ,Key_Star       ,Key_LeftParen        ,Key_RightCurlyBracket
@@ -144,9 +142,8 @@ KEYMAPS(
                               ,XXX                      ,Key_RightShift ,Key_RightControl     ,Key_RightAlt          ,Key_RightGui
       ,XXX                    ,XXX                      ,TD(TD_CUR)     ,TD(TD_OPP)           ,XXX                   ,XXX
       ,___                    ,XXX                      ,XXX            ,XXX                  ,XXX                   ,XXX
-   ),
+  ),
 
-  // Num layer accessed from QuKey held on Key_Backspace
   [NUM_LAYER] = KEYMAP_STACKED
   (
        Key_LeftBracket      ,Key_7                    ,Key_8          ,Key_9                ,Key_RightBracket
@@ -158,10 +155,8 @@ KEYMAPS(
                             ,XXX                      ,Key_RightShift ,Key_RightControl     ,Key_RightAlt          ,Key_RightGui
       ,XXX                  ,XXX                      ,TD(TD_CUR)     ,TD(TD_OPP)           ,XXX                   ,XXX
       ,XXX                  ,___                      ,XXX            ,XXX                  ,XXX                   ,XXX
-   ),
+  ),
 
-
-  // Function layer accessed from QuKey held on Key_Delete
   [FUN_LAYER] = KEYMAP_STACKED
   (
        Key_F12              ,Key_F7                   ,Key_F8         ,Key_F9               ,Key_PrintScreen
@@ -173,23 +168,8 @@ KEYMAPS(
                             ,XXX                      ,Key_RightShift ,Key_RightControl     ,Key_RightAlt          ,Key_RightGui
       ,XXX                  ,XXX                      ,TD(TD_CUR)     ,TD(TD_OPP)           ,XXX                   ,XXX
       ,XXX                  ,XXX                      ,___            ,XXX                  ,XXX                   ,XXX
-   ),
+  ),
 
-  // Media layer accessed from QuKey held on Key_Escape
-  [MEDIA_LAYER] = KEYMAP_STACKED
-  (
-       TD(TD_BOOT)          ,TD(TD_TAP)               ,TD(TD_EXTRA)    ,TD(TD_BASE)          ,XXX
-      ,Key_LeftGui          ,Key_LeftAlt              ,Key_LeftControl ,Key_LeftShift        ,XXX
-      ,XXX                  ,XXX                      ,TD(TD_OPP)      ,TD(TD_CUR)           ,XXX                   ,XXX
-      ,XXX                  ,XXX                      ,XXX             ,___                  ,XXX                   ,XXX
-
-                            ,REDO                     ,Key_Paste       ,Key_Copy             ,Key_Cut               ,Key_Undo
-                            ,Key_LeftArrow            ,Key_DownArrow   ,Key_UpArrow          ,Key_RightArrow        ,Key_CapsLock
-      ,XXX                  ,Key_Home                 ,Key_PageDown    ,Key_PageUp           ,Key_End               ,Key_Insert
-      ,Key_Enter            ,Key_Backspace            ,Key_Delete      ,XXX                  ,XXX                   ,XXX
-   ),
-
-  // Navigation layer accessed from QuKey held on Key_Space
   [NAV_LAYER] = KEYMAP_STACKED
   (
        TD(TD_BOOT)          ,TD(TD_TAP)               ,TD(TD_EXTRA)    ,TD(TD_BASE)          ,XXX
@@ -201,9 +181,8 @@ KEYMAPS(
                             ,Key_LeftArrow            ,Key_DownArrow   ,Key_UpArrow          ,Key_RightArrow        ,Key_CapsLock
       ,XXX                  ,Key_Home                 ,Key_PageDown    ,Key_PageUp           ,Key_End               ,Key_Insert
       ,Key_Enter            ,Key_Backspace            ,Key_Delete      ,XXX                  ,XXX                   ,XXX
-   ),
+  ),
 
-  // Mouse layer accessed from QuKey held on Key_Tab
   [MOUSE_LAYER] = KEYMAP_STACKED
   (
        TD(TD_BOOT)          ,TD(TD_TAP)               ,TD(TD_EXTRA)    ,TD(TD_BASE)          ,XXX
@@ -215,9 +194,23 @@ KEYMAPS(
                             ,Key_mouseL               ,Key_mouseDn     ,Key_mouseUp          ,Key_mouseR            ,Key_mouseScrollUp
       ,XXX                  ,Key_mouseWarpW           ,Key_mouseWarpS  ,Key_mouseWarpN       ,Key_mouseWarpE        ,Key_mouseScrollDn
       ,Key_mouseBtnR        ,Key_mouseBtnL            ,Key_mouseBtnM   ,XXX                  ,XXX                   ,XXX
-   )
+  ),
+
+  [MEDIA_LAYER] = KEYMAP_STACKED
+  (
+       TD(TD_BOOT)          ,TD(TD_TAP)               ,TD(TD_EXTRA)    ,TD(TD_BASE)          ,XXX
+      ,Key_LeftGui          ,Key_LeftAlt              ,Key_LeftControl ,Key_LeftShift        ,XXX
+      ,XXX                  ,XXX                      ,TD(TD_OPP)      ,TD(TD_CUR)           ,XXX                   ,XXX
+      ,XXX                  ,XXX                      ,XXX             ,___                  ,XXX                   ,XXX
+
+                            ,REDO                     ,Key_Paste       ,Key_Copy             ,Key_Cut               ,Key_Undo
+                            ,Key_LeftArrow            ,Key_DownArrow   ,Key_UpArrow          ,Key_RightArrow        ,Key_CapsLock
+      ,XXX                  ,Key_Home                 ,Key_PageDown    ,Key_PageUp           ,Key_End               ,Key_Insert
+      ,Key_Enter            ,Key_Backspace            ,Key_Delete      ,XXX                  ,XXX                   ,XXX
+  )
 
 )
+
 // clang-format on
 
 /* for QuKeys, the following addresses are for the Atreus:
@@ -378,9 +371,7 @@ void tapDanceDouble(uint8_t tap_dance_index, KeyAddr key_addr, uint8_t tap_count
 }
 
 void tapDanceAction(uint8_t tap_dance_index, KeyAddr key_addr, uint8_t tap_count, kaleidoscope::plugin::TapDance::ActionType tap_dance_action) {
-  switch (tap_dance_index) {
-      tapDanceDouble(tap_dance_index, key_addr, tap_count, tap_dance_action);
-  }
+  tapDanceDouble(tap_dance_index, key_addr, tap_count, tap_dance_action);
 }
 
 
