@@ -57,6 +57,7 @@ Specific meanings:
 
 Opp and Cur LLock keys.
 
+```
 +-----------|---------|---------+
 | Held key  | Cur     | Opp     |
 +===========|=========|=========+
@@ -72,9 +73,7 @@ Opp and Cur LLock keys.
 +-----------|---------|---------+
 | Delete    | ToFun   | ToMedia |
 +-----------|---------|---------+
-
-
-
+```
 
 
 ## Main layer
