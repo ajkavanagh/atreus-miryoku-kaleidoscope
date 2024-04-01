@@ -1,19 +1,35 @@
-# Modified keymap for Atreus, avoiding the use of Chrysalis
+# (Slightly) Modified Miryoku keymap for Atreus using Kaleidoscope
 
-Although Chrysalis is fun, it's probably more useful to just work out the keymap and then build it.
+Although Chrysalis is fun, it's probably more useful to just work out the
+keymap and then build it using Kaleidoscope.  Took a while to get right.
 
 * Colemak
 * More layers
 * Home Row mods
 
-This layout is basically https://github.com/manna-harbour/miryoku but with some minor mods for the Atreus, and ported to work on Kaleidoscope.
+The layout is basically https://github.com/manna-harbour/miryoku but with some
+minor mods for the Atreus, and ported to work on Kaleidoscope.
+
+# Building/flashing
+
+(borrowed from: https://community.keyboard.io/t/getting-started-with-atreus/5137/2)
+```bash
+$ git clone https://github.com/keyboardio/Kaleidoscope
+$ cd ${HOME}/git/Kaleidoscope
+$ make setup
+$ export KALEIDOSCOPE_DIR=`pwd`
+$ cd directory/of/your/Atreus
+$ ### Edit the .ino files ###
+$ make compile
+$ make flash # Pressing the prog (Escape originally, bottom/left key)
+```
 
 # Keymap
 
 Meaning of brackets:
 
- * `(thing)` == means hold for that layer.
- * `[thing]` == means double tap for that thing to be done.
+ * `(thing)` == means hold for 'thing' layer.
+ * `[thing]` == means double tap for that 'thing' to be done.
 
 Specific meanings:
 
@@ -64,7 +80,7 @@ Opp and Cur LLock keys.
 +---------|---------|-------------|-------------|---------|-----------|---------|---------|-------------|-------------|---------|---------+
 | c1      | c2      | c3          | c4          | c5      | c6        | c7      | c8      | c9          | c10         | c11     | c12     |
 +=========|=========|=============|=============|=========|===========|=========|=========|=============|=============|=========|=========+
-| Q       | W       | F           | P           | B       |           |         | J       | L           | U           | Y       | ;       |
+| Q       | W       | F           | P           | B       |           |         | J       | L           | U           | Y       | '       |
 | [Boot]  | [Tap]   | [Extra]     | [Base]      |         |           |         |         | [Base]      | [Extra]     | [Tap]   | [Boot]  |
 +---------|---------|-------------|-------------|---------|-----------|---------|---------|-------------|-------------|---------|---------+
 | A       | R       | S           | T           | G       |           |         | M       | N           | E           | I       | O       |
@@ -185,16 +201,3 @@ Opp and Cur LLock keys.
 |       |     |             |             |    |      | Click | Click | Click  |       |       |        |
 +-------|-----|-------------|-------------|----|------|-------|-------|--------|-------|-------|--------+
 ```
-
-
-
-Still need:
-
-* Mute, VolUp, VolDown
-* Prev, Next, Play/Pause
-* BacklightDown, BacklightUp
-* PrintScreen (PrtScr)
-* Insert, Delete
-* Alt graphics
-* RCtrl
-* RShift
