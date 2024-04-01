@@ -112,7 +112,7 @@ KEYMAPS(
       ,Key_Z         ,MT(RightAlt, X) ,Key_C        ,Key_D         ,Key_V                ,XXX
       ,XXX           ,XXX             ,XXX          ,KEY_ESC_MEDIA ,KEY_SPC_NAV          ,KEY_TAB_MOUSE
 
-                     ,Key_J           ,Key_L        ,Key_U         ,Key_Y                ,Key_Semicolon
+                     ,Key_J           ,Key_L        ,Key_U         ,Key_Y                ,Key_Quote
                      ,Key_M           ,SFT_T(N)     ,CTL_T(E)      ,ALT_T(I)             ,GUI_T(O)
       ,XXX           ,Key_K           ,Key_H        ,Key_Comma     ,MT(RightAlt, Period) ,Key_Slash
       ,KEY_ENT_SYM   ,KEY_BSPC_NUM    ,KEY_DEL_FUN  ,XXX           ,XXX                  ,XXX
@@ -126,7 +126,7 @@ KEYMAPS(
       ,XXX           ,XXX             ,XXX          ,KEY_ESC_MEDIA ,KEY_SPC_NAV          ,KEY_TAB_MOUSE
 
                      ,Key_Y           ,Key_U        ,Key_I         ,Key_O                ,Key_P
-                     ,Key_H           ,SFT_T(J)     ,CTL_T(K)      ,ALT_T(L)             ,GUI_T(Semicolon)
+                     ,Key_H           ,SFT_T(J)     ,CTL_T(K)      ,ALT_T(L)             ,GUI_T(Quote)
       ,XXX           ,Key_N           ,Key_M        ,Key_Comma     ,MT(RightAlt, Period) ,Key_Slash
       ,KEY_ENT_SYM   ,KEY_BSPC_NUM    ,KEY_DEL_FUN  ,XXX           ,XXX                  ,XXX
   ),
@@ -263,7 +263,7 @@ KALEIDOSCOPE_INIT_PLUGINS(
   // Tap-dance keys are general purpose, multi-use keys, which trigger a different action based on the number of times they were tapped in
   // sequence. As an example to make this clearer, one can have a key that inputs A when tapped once, inputs B when tapped twice, and
   // lights up the keyboard in Christmas colors when tapped a third time
-  TapDance,
+  //TapDance,
 
   // SpaceCadet can turn your shifts into parens on tap, while keeping them as
   // Shifts when held. SpaceCadetConfig lets Chrysalis configure some aspects of
@@ -273,13 +273,13 @@ KALEIDOSCOPE_INIT_PLUGINS(
 
   // Enables the "Sticky" behavior for modifiers, and the "Layer shift when
   // held" functionality for layer keys.
-  OneShot,
-  OneShotConfig,
-  EscapeOneShot,
-  EscapeOneShotConfig,
+  //OneShot,
+  //OneShotConfig,
+  //EscapeOneShot,
+  //EscapeOneShotConfig,
 
   // The macros plugin adds support for macros
-  Macros,
+  //Macros,
 
   // Enables dynamic, Chrysalis-editable macros.
   //DynamicMacros,
@@ -376,16 +376,15 @@ void tapDanceAction(uint8_t tap_dance_index, KeyAddr key_addr, uint8_t tap_count
 
 
 void setup() {
-  // set up qukeys before the kaleidoscope.setup() call.
-  // Note that these are default values.
+  Kaleidoscope.setup();
 
   Qukeys.setHoldTimeout(250);
-  Qukeys.setMaxIntervalForTapRepeat(200);
-  Qukeys.setOverlapThreshold(80);
-  Qukeys.setMinimumHoldTime(50);
+  Qukeys.setMaxIntervalForTapRepeat(0);
+  Qukeys.setOverlapThreshold(50);
+  Qukeys.setMinimumHoldTime(60);
   Qukeys.setMinimumPriorInterval(75);
+  Qukeys.activate();
 
-  Kaleidoscope.setup();
 
   //EEPROMKeymap.setup(9);
 
@@ -403,7 +402,7 @@ void setup() {
 
   // TODO[ajkavanagh]:
   // * TapDance actions for TD_CUR, TD_OPP, TD_EXTRA, TD_TAP, TD_BASE, TD_BOOT
-
+  Layer.move(COLEMAK_LAYER);
 }
 
 void loop() {
