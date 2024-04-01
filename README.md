@@ -1,5 +1,8 @@
 # (Slightly) Modified Miryoku keymap for Atreus using Kaleidoscope
 
+(Note the LICENSE is GPL3 as the files were copied from
+https://github.com/keyboardio/Kaleidoscope).
+
 Although Chrysalis is fun, it's probably more useful to just work out the
 keymap and then build it using Kaleidoscope.  Took a while to get right.
 
