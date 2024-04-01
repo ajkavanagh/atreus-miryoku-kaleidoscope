@@ -263,7 +263,7 @@ KALEIDOSCOPE_INIT_PLUGINS(
   // Tap-dance keys are general purpose, multi-use keys, which trigger a different action based on the number of times they were tapped in
   // sequence. As an example to make this clearer, one can have a key that inputs A when tapped once, inputs B when tapped twice, and
   // lights up the keyboard in Christmas colors when tapped a third time
-  //TapDance,
+  TapDance,
 
   // SpaceCadet can turn your shifts into parens on tap, while keeping them as
   // Shifts when held. SpaceCadetConfig lets Chrysalis configure some aspects of
